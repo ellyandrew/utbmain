@@ -126,7 +126,7 @@ export default function MainHeader() {
       {!isMobile && (
         <div style={{ display: "flex", gap: "0.75rem", marginLeft: "auto" }}>
           <Link
-            href="https://portal.uthabitiafrica.org/register"
+            href="https://portal.uthabitiafrica.org/auth/register"
             style={{
               padding: "0.55rem 1.2rem",
               borderRadius: "999px",
