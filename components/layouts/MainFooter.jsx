@@ -43,7 +43,7 @@ export default function Footer() {
             }}
             >
             <Image
-                src="/logos/uthabiti.png"
+                src="/logos/logo.png"
                 alt="Uthabiti Africa"
                 width={120}
                 height={36}

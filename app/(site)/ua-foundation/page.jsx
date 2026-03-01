@@ -306,7 +306,7 @@ export default function UAFoundationPage() {
             Make a Donation
           </Link>
           <Link
-            href="/partner"
+            href="/contact"
             style={{
               padding: "0.85rem 2rem",
               backgroundColor: "#eee",

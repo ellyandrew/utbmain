@@ -2,8 +2,42 @@
 
 import { useState, useEffect } from "react";
 import { MapPin, Users, Home, User, Heart, ChevronLeft, ChevronRight } from "lucide-react";
-import LoadingScreen from "@/components/ui/LoadScreen";
 import regionMap from "@/lib/regionMap";
+
+function TableSkeleton({ rows = 5, columns = 7 }) {
+  return (
+    <>
+      {Array.from({ length: rows }).map((_, rIdx) => (
+        <tr key={rIdx} style={{ borderBottom: "1px solid #f0f0f0" }}>
+          {Array.from({ length: columns }).map((_, cIdx) => (
+            <td key={cIdx} style={{ padding: "0.8rem 1rem" }}>
+              <div
+                style={{
+                  height: "14px",
+                  width: `${60 + Math.random() * 30}%`,
+                  background:
+                    "linear-gradient(90deg, #eee 25%, #f5f5f5 37%, #eee 63%)",
+                  backgroundSize: "400% 100%",
+                  borderRadius: "6px",
+                  animation: "skeleton 1.4s ease infinite",
+                }}
+              />
+            </td>
+          ))}
+        </tr>
+      ))}
+
+      <style>
+        {`
+          @keyframes skeleton {
+            0% { background-position: 100% 0; }
+            100% { background-position: -100% 0; }
+          }
+        `}
+      </style>
+    </>
+  );
+}
 
 export default function Insights() {
   const [filters, setFilters] = useState({ county: "", subCounty: "", ward: "" });
@@ -25,13 +59,14 @@ export default function Insights() {
         : [];
 
   const [rows, setRows] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
 
   useEffect(() => {
+    let isMounted = true;
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -39,16 +74,19 @@ export default function Insights() {
         const res = await fetch(`/api/insights?${query}`);
 
         const json = await res.json();
-        setRows(Array.isArray(json.data) ? json.data : []);
 
-        setCurrentPage(1);
+        if (isMounted) {
+          setRows(Array.isArray(json.data) ? json.data : []);
+          setCurrentPage(1);
+        }
       } catch (err) {
         console.error("Error fetching insights:", err);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
     fetchData();
+    return () => (isMounted = false);
   }, [filters]);
 
   // Pagination
@@ -57,7 +95,7 @@ export default function Insights() {
   const currentRows = rows.slice(indexOfFirstRow, indexOfLastRow);
   const totalPages = Math.ceil(rows.length / rowsPerPage);
 
-  if (loading) return <LoadingScreen text="Loading Insights..." />;
+  // if (loading) return <LoadingScreen text="Loading Insights..." />;
 
   return (
     <main>
@@ -173,17 +211,35 @@ export default function Insights() {
             </tr>
           </thead>
           <tbody>
-            {currentRows.map((item, idx) => (
-              <tr key={idx} style={{ borderBottom: "1px solid #f0f0f0" }}>
-                <td style={{ padding: "0.8rem 1rem" }}>{item.county}</td>
-                <td style={{ padding: "0.8rem 1rem" }}>{item.subCounty}</td>
-                <td style={{ padding: "0.8rem 1rem" }}>{item.ward}</td>
-                <td style={{ padding: "0.8rem 1rem" }}>{item.facilities}</td>
-                <td style={{ padding: "0.8rem 1rem" }}>{item.children}</td>
-                <td style={{ padding: "0.8rem 1rem" }}>{item.caregivers}</td>
-                <td style={{ padding: "0.8rem 1rem" }}>{item.members}</td>
+            {loading ? (
+              <TableSkeleton rows={rowsPerPage} columns={7} />
+            ) : currentRows.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={7}
+                  style={{
+                    textAlign: "center",
+                    padding: "2rem",
+                    color: "#777",
+                    fontSize: "0.95rem",
+                  }}
+                >
+                  No data found
+                </td>
               </tr>
-            ))}
+            ) : (
+              currentRows.map((item, idx) => (
+                <tr key={idx} style={{ borderBottom: "1px solid #f0f0f0" }}>
+                  <td style={{ padding: "0.8rem 1rem" }}>{item.county}</td>
+                  <td style={{ padding: "0.8rem 1rem" }}>{item.subCounty}</td>
+                  <td style={{ padding: "0.8rem 1rem" }}>{item.ward}</td>
+                  <td style={{ padding: "0.8rem 1rem" }}>{item.facilities}</td>
+                  <td style={{ padding: "0.8rem 1rem" }}>{item.children}</td>
+                  <td style={{ padding: "0.8rem 1rem" }}>{item.caregivers}</td>
+                  <td style={{ padding: "0.8rem 1rem" }}>{item.members}</td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
         )}

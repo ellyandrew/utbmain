@@ -272,8 +272,8 @@ const stakeholders = [
       {/* WHY CHILDCARE MATTERS */}
       <section
         style={{
-          padding: "5.5rem 1.5rem",
-          maxWidth: "1000px", // reduced overall width
+          padding: "clamp(3.5rem, 6vw, 5.5rem) 1.25rem",
+          maxWidth: "1000px",
           margin: "auto",
         }}
       >
@@ -284,8 +284,9 @@ const stakeholders = [
             fontWeight: 600,
             letterSpacing: "0.08em",
             textTransform: "uppercase",
-            fontSize: "0.85rem",
+            fontSize: "0.8rem",
             marginBottom: "0.75rem",
+            textAlign: "center",
           }}
         >
           The Case for Action
@@ -294,10 +295,11 @@ const stakeholders = [
         {/* Heading */}
         <h2
           style={{
-            fontSize: "clamp(1.9rem, 4vw, 2.4rem)",
+            fontSize: "clamp(1.75rem, 5vw, 2.4rem)",
             fontWeight: 700,
             lineHeight: 1.25,
-            marginBottom: "1.25rem",
+            marginBottom: "1.1rem",
+            textAlign: "center",
           }}
         >
           Why Childcare Matters
@@ -307,10 +309,11 @@ const stakeholders = [
         <p
           style={{
             maxWidth: "720px",
-            fontSize: "1.05rem",
+            fontSize: "clamp(0.95rem, 3.5vw, 1.05rem)",
             lineHeight: 1.8,
             color: "#444",
-            marginBottom: "3rem",
+            margin: "0 auto 2.5rem",
+            textAlign: "center",
           }}
         >
           Across Africa, more than <strong>90 million children under the age of five</strong>{" "}
@@ -319,109 +322,108 @@ const stakeholders = [
           social service — it is critical economic infrastructure.
         </p>
 
-        {/* Impact grid – fixed 2 per row */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)", // 👈 forces 2 cards
-            gap: "1.6rem",
-            maxWidth: "920px", // 👈 tighter grid width
-            margin: "0 auto",
-          }}
-        >
+        {/* Impact grid */}
+        <div className="impact-grid">
           {[
             {
-              icon: <Baby size={24} />,
+              icon: <Baby size={22} />,
               title: "Early Childhood Development",
               text: "Improved cognitive, social, and emotional outcomes during the most critical years of life.",
               bg: "linear-gradient(135deg, rgba(229,85,60,0.12), #ffffff)",
             },
             {
-              icon: <Users size={24} />,
+              icon: <Users size={22} />,
               title: "Women’s Economic Participation",
               text: "Enables mothers and caregivers to work, earn, and advance economically.",
               bg: "linear-gradient(135deg, rgba(0,0,0,0.06), #ffffff)",
             },
             {
-              icon: <Briefcase size={24} />,
+              icon: <Briefcase size={22} />,
               title: "Business Productivity",
               text: "Reduces absenteeism and improves workforce stability for employers.",
               bg: "linear-gradient(135deg, rgba(229,85,60,0.1), #ffffff)",
             },
             {
-              icon: <Building2 size={24} />,
+              icon: <Building2 size={22} />,
               title: "Childcare Entrepreneurship",
               text: "Creates dignified jobs and supports local childcare enterprises.",
               bg: "linear-gradient(135deg, rgba(0,0,0,0.05), #ffffff)",
             },
             {
-              icon: <TrendingUp size={24} />,
+              icon: <TrendingUp size={22} />,
               title: "Economic Growth",
               text: "Strengthens national economies through higher labour participation and human capital development.",
               bg: "linear-gradient(135deg, rgba(229,85,60,0.14), #ffffff)",
             },
           ].map((item, i) => (
-            <div
-              key={i}
-              style={{
-                display: "flex",
-                gap: "1.1rem",
-                alignItems: "flex-start",
-                padding: "1.4rem 1.6rem", // 👈 reduced height
-                borderRadius: "1.1rem",
-                background: item.bg,
-                border: "1px solid var(--color-border)",
-                boxShadow: "0 12px 28px rgba(0,0,0,0.06)",
-              }}
-            >
-              {/* Icon */}
-              <div
-                style={{
-                  minWidth: "44px",
-                  height: "44px",
-                  borderRadius: "50%",
-                  backgroundColor: "var(--color-primary)",
-                  color: "var(--color-white)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {item.icon}
-              </div>
+            <div key={i} className="impact-card" style={{ background: item.bg }}>
+              <div className="impact-icon">{item.icon}</div>
 
-              {/* Text */}
               <div>
-                <h3
-                  style={{
-                    fontSize: "1.02rem",
-                    fontWeight: 600,
-                    marginBottom: "0.35rem",
-                  }}
-                >
-                  {item.title}
-                </h3>
-
-                <p
-                  style={{
-                    fontSize: "0.94rem",
-                    lineHeight: 1.6,
-                    color: "#555",
-                    margin: 0,
-                  }}
-                >
-                  {item.text}
-                </p>
+                <h3 className="impact-title">{item.title}</h3>
+                <p className="impact-text">{item.text}</p>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Mobile fallback */}
+        {/* Scoped styles */}
         <style jsx>{`
+          .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.6rem;
+            max-width: 920px;
+            margin: 0 auto;
+          }
+
+          .impact-card {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            padding: 1.4rem 1.5rem;
+            border-radius: 1.1rem;
+            border: 1px solid var(--color-border);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+          }
+
+          .impact-icon {
+            min-width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background-color: var(--color-primary);
+            color: var(--color-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .impact-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+          }
+
+          .impact-text {
+            font-size: 0.92rem;
+            line-height: 1.6;
+            color: #555;
+            margin: 0;
+          }
+
           @media (max-width: 768px) {
-            div[style*="grid-template-columns"] {
+            .impact-grid {
               grid-template-columns: 1fr;
+              gap: 1.25rem;
+            }
+
+            .impact-card {
+              padding: 1.2rem 1.25rem;
+            }
+
+            .impact-icon {
+              min-width: 38px;
+              height: 38px;
             }
           }
         `}</style>
@@ -430,7 +432,7 @@ const stakeholders = [
       {/* CATALYTIC INITIATIVES */}
       <section
         style={{
-          padding: "6rem 1.5rem",
+          padding: "clamp(3.5rem, 6vw, 6rem) 1.25rem",
           background:
             "linear-gradient(180deg, #fafafa 0%, #ffffff 65%)",
           position: "relative",
@@ -444,8 +446,8 @@ const stakeholders = [
             top: "-140px",
             left: "50%",
             transform: "translateX(-50%)",
-            width: "560px",
-            height: "560px",
+            width: "min(560px, 90vw)",
+            height: "min(560px, 90vw)",
             background:
               "radial-gradient(circle, rgba(229,85,60,0.18), transparent 70%)",
             filter: "blur(80px)",
@@ -468,8 +470,9 @@ const stakeholders = [
               fontWeight: 600,
               letterSpacing: "0.08em",
               textTransform: "uppercase",
-              fontSize: "0.85rem",
+              fontSize: "0.8rem",
               marginBottom: "0.75rem",
+              textAlign: "center",
               transform: visible ? "translateY(0)" : "translateY(20px)",
               opacity: visible ? 1 : 0,
               transition: "all 0.7s ease",
@@ -480,9 +483,10 @@ const stakeholders = [
 
           <h2
             style={{
-              fontSize: "clamp(2rem, 4vw, 2.6rem)",
+              fontSize: "clamp(1.85rem, 5vw, 2.6rem)",
               fontWeight: 700,
-              marginBottom: "1.25rem",
+              marginBottom: "1.1rem",
+              textAlign: "center",
               transform: visible ? "translateY(0)" : "translateY(25px)",
               opacity: visible ? 1 : 0,
               transition: "all 0.8s ease",
@@ -494,10 +498,11 @@ const stakeholders = [
           <p
             style={{
               maxWidth: "820px",
-              fontSize: "1.05rem",
-              lineHeight: 1.8,
+              fontSize: "clamp(0.95rem, 3.5vw, 1.05rem)",
+              lineHeight: 1.75,
               color: "#555",
-              marginBottom: "3.5rem",
+              margin: "0 auto 3rem",
+              textAlign: "center",
               transform: visible ? "translateY(0)" : "translateY(30px)",
               opacity: visible ? 1 : 0,
               transition: "all 0.9s ease",
@@ -509,14 +514,8 @@ const stakeholders = [
             across Africa.
           </p>
 
-          {/* Cards grid (2 per row desktop) */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))",
-              gap: "2rem",
-            }}
-          >
+          {/* Cards grid */}
+          <div className="initiative-grid">
             {[
               {
                 logo: "/logos/cac-logo.png",
@@ -545,94 +544,114 @@ const stakeholders = [
             ].map((item, i) => (
               <div
                 key={i}
+                className="initiative-card"
                 style={{
-                  position: "relative",
-                  padding: "2.4rem",
-                  borderRadius: "1.4rem",
-                  backgroundColor: "var(--color-white)",
-                  border: "1px solid var(--color-border)",
-                  boxShadow: "0 22px 50px rgba(0,0,0,0.06)",
-                  transform: visible
-                    ? "translateY(0)"
-                    : "translateY(40px)",
+                  transform: visible ? "translateY(0)" : "translateY(40px)",
                   opacity: visible ? 1 : 0,
                   transition: "all 0.9s ease",
                   transitionDelay: `${0.15 + i * 0.12}s`,
                 }}
               >
-                {/* Brand glow accent */}
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    borderRadius: "1.4rem",
-                    background:
-                      "linear-gradient(135deg, rgba(229,85,60,0.12), transparent 55%)",
-                    opacity: 0.45,
-                    pointerEvents: "none",
-                  }}
-                />
+                <div className="initiative-glow" />
 
-                {/* Logo container */}
-                <div
-                  style={{
-                    height: "70px",
-                    marginBottom: "1.2rem",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
+                <div className="logo-wrap">
                   <Image
                     src={item.logo}
                     alt={`${item.title} logo`}
-                    width={160}
-                    height={60}
-                    style={{
-                      maxHeight: "60px",
-                      width: "auto",
-                      objectFit: "contain",
-                    }}
+                    width={150}
+                    height={56}
+                    style={{ objectFit: "contain" }}
                   />
                 </div>
 
-                {/* Title */}
-                <h3
-                  style={{
-                    fontSize: "1.3rem",
-                    fontWeight: 600,
-                    marginBottom: "0.75rem",
-                  }}
-                >
-                  {item.title}
-                </h3>
+                <h3>{item.title}</h3>
 
-                {/* Description */}
-                <p
-                  style={{
-                    fontSize: "0.98rem",
-                    lineHeight: 1.7,
-                    color: "#555",
-                    marginBottom: "1.25rem",
-                  }}
-                >
-                  {item.text}
-                </p>
+                <p>{item.text}</p>
 
-                <Link
-                  href="/"
-                  style={{
-                    fontWeight: 600,
-                    color: "var(--color-primary)",
-                    textDecoration: "none",
-                    fontSize: "0.95rem",
-                  }}
-                >
+                <Link href="/" className="learn-link">
                   Learn More →
                 </Link>
               </div>
             ))}
           </div>
         </div>
+
+        {/* Responsive styles */}
+        <style jsx>{`
+          .initiative-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 2rem;
+          }
+
+          .initiative-card {
+            position: relative;
+            padding: 2.2rem;
+            border-radius: 1.4rem;
+            background: var(--color-white);
+            border: 1px solid var(--color-border);
+            box-shadow: 0 22px 50px rgba(0, 0, 0, 0.06);
+          }
+
+          .initiative-glow {
+            position: absolute;
+            inset: 0;
+            border-radius: 1.4rem;
+            background: linear-gradient(
+              135deg,
+              rgba(229, 85, 60, 0.12),
+              transparent 55%
+            );
+            opacity: 0.45;
+            pointer-events: none;
+          }
+
+          .logo-wrap {
+            height: 64px;
+            margin-bottom: 1.1rem;
+            display: flex;
+            align-items: center;
+          }
+
+          h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.65rem;
+          }
+
+          p {
+            font-size: 0.95rem;
+            line-height: 1.65;
+            color: #555;
+            margin-bottom: 1.2rem;
+          }
+
+          .learn-link {
+            font-weight: 600;
+            color: var(--color-primary);
+            text-decoration: none;
+            font-size: 0.95rem;
+          }
+
+          @media (max-width: 768px) {
+            .initiative-grid {
+              grid-template-columns: 1fr;
+              gap: 1.5rem;
+            }
+
+            .initiative-card {
+              padding: 1.7rem 1.5rem;
+            }
+
+            .logo-wrap {
+              height: 52px;
+            }
+
+            h3 {
+              font-size: 1.15rem;
+            }
+          }
+        `}</style>
       </section>
 
       {/* STAKEHOLDERS */}

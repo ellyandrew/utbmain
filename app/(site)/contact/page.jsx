@@ -2,13 +2,52 @@
 
 import { useState, useEffect } from "react";
 import { MapPin, Phone, Mail } from "lucide-react";
+import { useToast } from "@/components/ui/ToastContext";
 
 export default function Contact() {
-  const [visible, setVisible] = useState(false);
 
-  useEffect(() => {
-    setTimeout(() => setVisible(true), 120);
-  }, []);
+const [visible, setVisible] = useState(false);
+
+useEffect(() => {
+  const timer = setTimeout(() => setVisible(true), 300);
+  return () => clearTimeout(timer);
+}, []);
+
+  const contactSubjects = [
+  "General Inquiry",
+  "Request for Information",
+  "Feedback or Suggestions",
+
+  "Partnership Opportunity",
+  "Collaboration Proposal",
+  "Donor / Funder Engagement",
+  "Corporate Partnership",
+
+  "Childcare Programs Inquiry",
+  "Network for Women in Childcare",
+  "Collaborative Action for Childcare (CAC)",
+  "Mama Plus Program",
+  "SACCO & Financial Inclusion",
+
+  "Join the Network",
+  "Membership Support",
+  "Community Engagement",
+
+  "Events & Convenings",
+  "Media & Press Inquiry",
+  "Speaking Engagements",
+
+  "Jobs & Careers",
+  "Volunteering Opportunities",
+  "Internships & Fellowships",
+
+  "Policy & Advocacy",
+  "Training & Capacity Building",
+  "Data or Research Inquiry",
+  "Website / Portal Support",
+
+  "Other",
+];
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -19,14 +58,82 @@ export default function Contact() {
     message: "",
   });
 
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const { showToast } = useToast();
+
+  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const isValidPersonName = (name) => /^[a-zA-Z\s'-]{2,}$/.test(name);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors((prev) => ({ ...prev, [e.target.name]: null }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
-    alert("Thank you! Your message has been sent.");
+  // Submit form data to API route
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  let newErrors = {};
+
+  const fullName = `${formData.firstName} ${formData.lastName}`.trim();
+
+  if (!formData.firstName.trim()) {
+    newErrors.firstName = "First name is required";
+  }
+
+  if (!formData.lastName.trim()) {
+    newErrors.lastName = "Last name is required";
+  }
+
+  if (!formData.email.trim()) {
+    newErrors.email = "Email address is required";
+  } else if (!isValidEmail(formData.email)) {
+    newErrors.email = "Enter a valid email address";
+  }
+
+  if (!isValidPersonName(fullName)) {
+    newErrors.name = "Enter a valid full name";
+  }
+
+  if (!formData.subject) {
+    newErrors.subject = "Please select a subject";
+  }
+
+  if (!formData.message.trim()) {
+    newErrors.message = "Message cannot be empty";
+  }
+
+  setErrors(newErrors);
+
+  if (Object.keys(newErrors).length !== 0) return;
+
+  try {
+    setLoading(true);
+
+    const res = await fetch("/api/contact/sendContact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: fullName,
+        email: formData.email,
+        phone: formData.phone,
+        subject: formData.subject,
+        message: formData.message,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      showToast(data.error || "Failed to send message", "error");
+      return;
+    }
+
+    showToast("Message sent successfully", "success");
+
     setFormData({
       firstName: "",
       lastName: "",
@@ -35,10 +142,16 @@ export default function Contact() {
       subject: "",
       message: "",
     });
-  };
+
+  } catch {
+    showToast("Network error. Please try again.", "error");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
-    <main>
+    <main >
 
       {/* HERO */}
       <section
@@ -110,57 +223,85 @@ export default function Contact() {
         }}
       >
         {/* Form */}
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+       <form
+          onSubmit={handleSubmit}
+          style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
+        >
+          {/* Names */}
           <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-            <input
-              type="text"
-              name="firstName"
-              placeholder="First Name"
-              value={formData.firstName}
-              onChange={handleChange}
-              required
-              style={{
-                flex: 1,
-                padding: "0.9rem 1rem",
-                borderRadius: "0.75rem",
-                border: "1px solid var(--color-border)",
-                fontSize: "1rem",
-              }}
-            />
-            <input
-              type="text"
-              name="lastName"
-              placeholder="Last Name"
-              value={formData.lastName}
-              onChange={handleChange}
-              required
-              style={{
-                flex: 1,
-                padding: "0.9rem 1rem",
-                borderRadius: "0.75rem",
-                border: "1px solid var(--color-border)",
-                fontSize: "1rem",
-              }}
-            />
+            <div style={{ flex: 1 }}>
+              <input
+                type="text"
+                name="firstName"
+                placeholder="First Name"
+                value={formData.firstName}
+                onChange={handleChange}
+                style={{
+                  width: "100%",
+                  padding: "0.9rem 1rem",
+                  borderRadius: "0.75rem",
+                  border: errors.firstName
+                    ? "1px solid #e53935"
+                    : "1px solid var(--color-border)",
+                  fontSize: "1rem",
+                }}
+              />
+              {errors.firstName && (
+                <small style={{ color: "#e53935" }}>{errors.firstName}</small>
+              )}
+            </div>
+
+            <div style={{ flex: 1 }}>
+              <input
+                type="text"
+                name="lastName"
+                placeholder="Last Name"
+                value={formData.lastName}
+                onChange={handleChange}
+                style={{
+                  width: "100%",
+                  padding: "0.9rem 1rem",
+                  borderRadius: "0.75rem",
+                  border: errors.lastName
+                    ? "1px solid #e53935"
+                    : "1px solid var(--color-border)",
+                  fontSize: "1rem",
+                }}
+              />
+              {errors.lastName && (
+                <small style={{ color: "#e53935" }}>{errors.lastName}</small>
+              )}
+            </div>
           </div>
-          <input
-            type="email"
-            name="email"
-            placeholder="Email Address"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            style={{
-              padding: "0.9rem 1rem",
-              borderRadius: "0.75rem",
-              border: "1px solid var(--color-border)",
-              fontSize: "1rem",
-            }}
-          />
+
+          {/* Email */}
+          <div>
+            <input
+              type="email"
+              name="email"
+              placeholder="Email Address"
+              value={formData.email}
+              onChange={handleChange}
+              style={{
+                width: "100%",
+                padding: "0.9rem 1rem",
+                borderRadius: "0.75rem",
+                border: errors.email
+                  ? "1px solid #e53935"
+                  : "1px solid var(--color-border)",
+                fontSize: "1rem",
+              }}
+            />
+            {errors.email && (
+              <small style={{ color: "#e53935" }}>{errors.email}</small>
+            )}
+          </div>
+
+          {/* Phone */}
           <input
             type="tel"
             name="phone"
-            placeholder="Mobile Number"
+            placeholder="Mobile Number (optional)"
             value={formData.phone}
             onChange={handleChange}
             style={{
@@ -170,36 +311,64 @@ export default function Contact() {
               fontSize: "1rem",
             }}
           />
-          <input
-            type="text"
-            name="subject"
-            placeholder="Subject"
-            value={formData.subject}
-            onChange={handleChange}
-            style={{
-              padding: "0.9rem 1rem",
-              borderRadius: "0.75rem",
-              border: "1px solid var(--color-border)",
-              fontSize: "1rem",
-            }}
-          />
-          <textarea
-            name="message"
-            placeholder="Your Message"
-            value={formData.message}
-            onChange={handleChange}
-            required
-            rows={6}
-            style={{
-              padding: "0.9rem 1rem",
-              borderRadius: "0.75rem",
-              border: "1px solid var(--color-border)",
-              fontSize: "1rem",
-              resize: "vertical",
-            }}
-          />
+
+          {/* Subject */}
+          <div>
+            <select
+              name="subject"
+              value={formData.subject}
+              onChange={handleChange}
+              style={{
+                width: "100%",
+                padding: "0.9rem 1rem",
+                borderRadius: "0.75rem",
+                border: errors.subject
+                  ? "1px solid #e53935"
+                  : "1px solid var(--color-border)",
+                fontSize: "1rem",
+                backgroundColor: "#fff",
+              }}
+            >
+              <option value="">— Select Subject —</option>
+              {contactSubjects.map((subject) => (
+                <option key={subject} value={subject}>
+                  {subject}
+                </option>
+              ))}
+            </select>
+            {errors.subject && (
+              <small style={{ color: "#e53935" }}>{errors.subject}</small>
+            )}
+          </div>
+
+          {/* Message */}
+          <div>
+            <textarea
+              name="message"
+              placeholder="Your Message"
+              value={formData.message}
+              onChange={handleChange}
+              rows={6}
+              style={{
+                width: "100%",
+                padding: "0.9rem 1rem",
+                borderRadius: "0.75rem",
+                border: errors.message
+                  ? "1px solid #e53935"
+                  : "1px solid var(--color-border)",
+                fontSize: "1rem",
+                resize: "vertical",
+              }}
+            />
+            {errors.message && (
+              <small style={{ color: "#e53935" }}>{errors.message}</small>
+            )}
+          </div>
+
+          {/* Submit */}
           <button
             type="submit"
+            disabled={loading}
             style={{
               padding: "0.9rem 2rem",
               backgroundColor: "var(--color-primary)",
@@ -208,11 +377,12 @@ export default function Contact() {
               border: "none",
               fontWeight: 600,
               fontSize: "1rem",
-              cursor: "pointer",
+              cursor: loading ? "not-allowed" : "pointer",
+              opacity: loading ? 0.7 : 1,
               alignSelf: "flex-start",
             }}
           >
-            Send Message
+            {loading ? "Sending..." : "Send Message"}
           </button>
         </form>
 
@@ -244,10 +414,10 @@ export default function Contact() {
           <div style={{ marginTop: "2rem" }}>
             <p style={{ fontWeight: 600, marginBottom: "0.8rem" }}>Get Involved:</p>
             <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-              <li><a href="/partner" style={{ color: "var(--color-primary)", textDecoration: "none", fontWeight: 500 }}>Partner With Us</a></li>
-              <li><a href="/jobs" style={{ color: "var(--color-primary)", textDecoration: "none", fontWeight: 500 }}>Jobs</a></li>
-              <li><a href="/volunteer" style={{ color: "var(--color-primary)", textDecoration: "none", fontWeight: 500 }}>Volunteer</a></li>
-              <li><a href="/calendar" style={{ color: "var(--color-primary)", textDecoration: "none", fontWeight: 500 }}>Calendar</a></li>
+              <li><a href="/contact" style={{ color: "var(--color-primary)", textDecoration: "none", fontWeight: 500 }}>Partner With Us</a></li>
+              <li><a href="/contact" style={{ color: "var(--color-primary)", textDecoration: "none", fontWeight: 500 }}>Jobs</a></li>
+              <li><a href="/contact" style={{ color: "var(--color-primary)", textDecoration: "none", fontWeight: 500 }}>Volunteer</a></li>
+              <li><a href="/contact" style={{ color: "var(--color-primary)", textDecoration: "none", fontWeight: 500 }}>Calendar</a></li>
             </ul>
           </div>
         </div>
@@ -275,6 +445,52 @@ export default function Contact() {
           Contact Us
         </a>
       </section>
+      <style jsx>{`
+        @media (max-width: 768px) {
+          /* HERO */
+          section:first-of-type {
+            min-height: 40vh;
+            padding: 3rem 1.5rem;
+          }
+
+          /* FORM + INFO GRID */
+          section[style*="grid"] {
+            gap: 2rem;
+            margin: 3rem auto;
+          }
+
+          /* FORM INPUT ROW */
+          form > div {
+            flex-direction: column;
+          }
+
+          /* SUBMIT BUTTON */
+          button[type="submit"] {
+            width: 100%;
+            text-align: center;
+          }
+
+          /* CONTACT INFO */
+          section[style*="grid"] > div:last-child {
+            padding-top: 1rem;
+          }
+
+          /* CTA */
+          section:last-of-type h2 {
+            font-size: 1.6rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          h1 {
+            font-size: 2.1rem !important;
+          }
+
+          p {
+            font-size: 1rem;
+          }
+        }
+      `}</style>
     </main>
   );
 }

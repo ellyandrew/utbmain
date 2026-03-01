@@ -1,73 +1,55 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback } from "react";
-import { X, CheckCircle, AlertCircle } from "lucide-react";
+import { createContext, useContext, useState } from "react";
 
-const ToastContext = createContext(null);
+const ToastContext = createContext();
 
 export const ToastProvider = ({ children }) => {
   const [toasts, setToasts] = useState([]);
 
-  const showToast = useCallback((message, type = "success", duration = 4000) => {
+  const showToast = (message, type = "success", duration = 3000) => {
     const id = Date.now();
-
     setToasts((prev) => [...prev, { id, message, type }]);
 
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
     }, duration);
-  }, []);
-
-  const removeToast = (id) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-
-      {/* Toast Container */}
-      <div className="fixed top-4 right-4 z-[1100]">
+      <div style={{
+        position: "fixed",
+        top: "1rem",
+        right: "1rem",
+        display: "flex",
+        flexDirection: "column",
+        gap: "0.5rem",
+        zIndex: 9999,
+      }}>
         {toasts.map((toast) => (
-          <Toast
+          <div
             key={toast.id}
-            toast={toast}a
-            onClose={() => removeToast(toast.id)}
-          />
+            style={{
+              padding: "0.75rem 1.25rem",
+              borderRadius: "0.5rem",
+              color: "#fff",
+              minWidth: "220px",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+              backgroundColor:
+                toast.type === "success"
+                  ? "#38a169" // green
+                  : toast.type === "error"
+                  ? "#e53e3e" // red
+                  : "#3182ce", // blue/info
+            }}
+          >
+            {toast.message}
+          </div>
         ))}
       </div>
     </ToastContext.Provider>
-  );
-};
-
-const Toast = ({ toast, onClose }) => {
-  const styles = {
-    success: {
-      bg: "bg-green-100",
-      text: "text-green-700",
-      icon: <CheckCircle size={16} />,
-    },
-    error: {
-      bg: "bg-red-100",
-      text: "text-red-700",
-      icon: <AlertCircle size={16} />,
-    },
-  };
-
-  const style = styles[toast.type];
-
-  return (
-    <div
-      className={`flex items-start gap-2 min-w-[280px] max-w-sm p-6 rounded-lg shadow-lg ${style.bg} ${style.text}`}
-    >
-      {style.icon}
-
-      <span className="flex-1 text-sm">{toast.message}</span>
-
-      <button onClick={onClose} className="opacity-70 hover:opacity-100">
-        <X size={16} />
-      </button>
-    </div>
   );
 };
 
