@@ -225,7 +225,7 @@ const stakeholders = [
               transition: "all 0.9s ease",
             }}
           >
-            Uthabiti Africa Foundation
+            Uthabiti Africa
           </h1>
 
           {/* Subtitle */}
