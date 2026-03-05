@@ -12,17 +12,81 @@ export default function Donate() {
   }, []);
 
   const [amount, setAmount] = useState("");
+  const [email, setEmail] = useState("");
   const [frequency, setFrequency] = useState("one-time");
   const presetAmounts = [500, 1000, 2500, 5000];
 
-  const handleDonate = (e) => {
-    e.preventDefault();
-    if (!amount || amount <= 0) {
-      showToast("Please enter a valid donation amount.", "error");
+  const payWithPaystack = () => {
+    if (!window.PaystackPop) {
+      showToast("Payment system not ready. Please refresh.", "error");
       return;
     }
-    showToast(`Thank you for your generous donation of KES ${amount} (${frequency}).`, "success");
-    setAmount("");
+
+    const handler = window.PaystackPop.setup({
+      key: process.env.NEXT_PUBLIC_PAYSTACK_KEY,
+      email,
+      amount: Number(amount) * 100, // kobo
+      currency: "KES",
+      metadata: {
+        custom_fields: [
+          {
+            display_name: "Donation Type",
+            variable_name: "frequency",
+            value: frequency,
+          },
+        ],
+      },
+      callback: function (response) {
+        verifyPayment(response.reference);
+      },
+      onClose: function () {
+        showToast("Payment cancelled", "error");
+      },
+    });
+
+    handler.openIframe();
+  };
+
+  /* 🔹 VERIFY PAYMENT */
+  const verifyPayment = async (reference) => {
+    try {
+      const res = await fetch("/api/paystack/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reference }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        showToast("Payment verification failed", "error");
+        return;
+      }
+
+      showToast("Thank you for your donation ❤️", "success");
+      setAmount("");
+      setEmail("");
+      setFrequency("one-time");
+    } catch {
+      showToast("Network error. Please try again.", "error");
+    }
+  };
+
+  /* 🔹 SUBMIT HANDLER */
+  const handleDonate = (e) => {
+    e.preventDefault();
+
+    if (!email) {
+      showToast("Email address is required.", "error");
+      return;
+    }
+
+    if (!amount || Number(amount) <= 0) {
+      showToast("Please enter a valid amount.", "error");
+      return;
+    }
+
+    payWithPaystack(); // ✅ now defined
   };
 
   return (
@@ -96,6 +160,19 @@ export default function Donate() {
           }}
         >
           <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+            <input
+            type="email"
+            placeholder="Email address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            style={{
+              padding: "0.9rem 1rem",
+              borderRadius: "0.75rem",
+              border: "1px solid var(--color-border)",
+              fontSize: "1rem",
+            }}
+          />
             <input
               type="number"
               placeholder="Enter custom amount (KES)"

@@ -371,6 +371,24 @@ model verification_tbl {
   created_at        DateTime  @default(now()) @db.Timestamp(0)
 }
 
+model donations_tbl {
+  donation_id Int                     @id @default(autoincrement())
+  reference   String                  @db.VarChar(255)
+  paystackId  String?                 @db.VarChar(255)
+  donorName   String?                 @db.VarChar(100)
+  email       String                  @db.VarChar(100)
+  phone       String?                 @db.VarChar(20)
+  amount      Int
+  currency    String                  @default("KES") @db.VarChar(15)
+  status      donations_tbl_status
+  frequency   donations_tbl_frequency
+  source      String?                 @db.VarChar(20)
+  message     String?                 @db.VarChar(30)
+  rawEvent    String?                 @db.LongText
+  createdAt   DateTime                @default(now()) @db.DateTime(0)
+  updatedAt   DateTime                @default(now()) @db.DateTime(0)
+}
+
 enum loans_tbl_loan_type {
   Emergency_Loan   @map("Emergency Loan")
   Business_Loan    @map("Business Loan")
@@ -546,4 +564,17 @@ enum childcare_survey_test_status {
   Pending
   Active
   Inactive
+}
+
+enum donations_tbl_status {
+  PENDING
+  SUCCESS
+  FAILED
+  REVERSED
+}
+
+enum donations_tbl_frequency {
+  ONE_TIME
+  MONTHLY
+  EMPTY_ENUM_VALUE @map("")
 }

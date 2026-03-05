@@ -52,21 +52,20 @@ export default function MainHeader() {
           padding: "0.75rem 1.25rem",
           transition: "all 0.35s ease",
           backgroundColor: scrolled
-            ? "var(--color-black)"
-            : "rgba(0,0,0,0.15)",
+            ? "var(--color-white)"
+            : "rgb(255, 255, 255)",
           backdropFilter: scrolled ? "none" : "blur(10px)",
           borderBottom: scrolled
             ? "1px solid var(--color-border)"
             : "1px solid rgba(255,255,255,0.15)",
           boxShadow: scrolled
-            ? "0 6px 20px rgba(0,0,0,0.08)"
+            ? "0 6px 20px rgb(229,85,60,0.45)"
             : "0 0 30px rgba(229,85,60,0.45)",
         }}
       >
         {/* Logo (left) */}
         <Link href="/" style={{ display: "flex", 
-          alignItems: "center", backgroundColor: "#fff",
-           borderRadius: "50% 60% 50% 60% / 50% 50% 60% 60%", padding: "0.5rem 1rem", }}>
+          alignItems: "center", }}>
           <Image
             src="/logos/logo.png"
             alt="Logo"
@@ -94,7 +93,7 @@ export default function MainHeader() {
                         ? "#E5553C" // active
                         : hovered === i
                         ? "var(--color-primary)" // hover
-                        : "var(--color-white)", // default
+                        : "var(--color-black)", // default
                       transition: "color 0.25s ease",
                     }}
                   >

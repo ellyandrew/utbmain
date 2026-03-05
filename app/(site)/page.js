@@ -172,29 +172,54 @@ const stakeholders = [
           alignItems: "center",
           justifyContent: "center",
           textAlign: "center",
-          color: "var(--color-white)",
           overflow: "hidden",
-          backgroundImage:
-            "linear-gradient(180deg, rgba(0,0,0,0.6), rgba(229,85,60,0.3)), url('/illustrations/hero2.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
+          background:
+            "linear-gradient(135deg, #FFF4F1 0%, #FDE8E3 40%, #FFFFFF 100%)",
         }}
       >
+        {/* Decorative Shapes */}
+        <div
+          style={{
+            position: "absolute",
+            top: "-120px",
+            right: "-120px",
+            width: "320px",
+            height: "320px",
+            background: "rgba(229,85,60,0.12)",
+            borderRadius: "50%",
+            filter: "blur(40px)",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: "-140px",
+            left: "-140px",
+            width: "360px",
+            height: "360px",
+            background: "rgba(68,88,220,0.12)",
+            borderRadius: "50%",
+            filter: "blur(50px)",
+          }}
+        />
+
         <div
           style={{
             maxWidth: "1000px",
             margin: "0 auto",
-            paddingTop: "0", 
+            padding: "0 1.5rem",
+            position: "relative",
+            zIndex: 2,
           }}
         >
           {/* Heading */}
           <h1
             style={{
-              fontSize: "clamp(2.4rem, 5vw, 3.4rem)",
-              fontWeight: 700,
-              lineHeight: 1.2,
+              fontSize: "clamp(2.6rem, 5vw, 3.6rem)",
+              fontWeight: 800,
+              lineHeight: 1.15,
               marginBottom: "1.5rem",
+              color: "#1f2937",
               transform: visible ? "translateY(0)" : "translateY(-50px)",
               opacity: visible ? 1 : 0,
               transition: "all 0.9s ease",
@@ -206,18 +231,20 @@ const stakeholders = [
           {/* Subtitle */}
           <p
             style={{
-              maxWidth: "900px",
-              margin: "0 auto 2.5rem",
-              fontSize: "1.125rem",
+              maxWidth: "880px",
+              margin: "0 auto 2.8rem",
+              fontSize: "1.15rem",
               lineHeight: 1.8,
-              color: "#e6e6e6",
+              color: "#4b5563",
               transform: visible ? "translateY(0)" : "translateY(-30px)",
               opacity: visible ? 1 : 0,
               transition: "all 0.9s ease",
               transitionDelay: "0.15s",
             }}
           >
-            Quality, Affordable Childcare for All. The Foundation empowers communities across Africa, focusing on women and marginalized groups to foster sustainable development, economic opportunity, and social change.
+            Quality, affordable childcare for all. We empower communities across
+            Africa—centering women and marginalized groups—to build sustainable
+            livelihoods, resilient systems, and lasting social impact.
           </p>
 
           {/* CTA Buttons */}
@@ -236,13 +263,14 @@ const stakeholders = [
             <Link
               href="/donate"
               style={{
-                padding: "0.9rem 2.1rem",
+                padding: "0.9rem 2.2rem",
                 backgroundColor: "var(--color-primary)",
-                color: "var(--color-white)",
+                color: "#fff",
                 borderRadius: "999px",
                 textDecoration: "none",
                 fontWeight: 600,
                 fontSize: "1rem",
+                boxShadow: "0 10px 30px rgba(229,85,60,0.25)",
               }}
             >
               Make a Donation
@@ -251,15 +279,14 @@ const stakeholders = [
             <Link
               href="/contact"
               style={{
-                padding: "0.9rem 2.1rem",
+                padding: "0.9rem 2.2rem",
                 border: "2px solid var(--color-primary)",
                 color: "var(--color-primary)",
                 borderRadius: "999px",
                 textDecoration: "none",
                 fontWeight: 600,
                 fontSize: "1rem",
-                backgroundColor: "rgba(0,0,0,0.3)",
-                backdropFilter: "blur(4px)",
+                backgroundColor: "#fff",
               }}
             >
               Partner With Us
@@ -267,7 +294,6 @@ const stakeholders = [
           </div>
         </div>
       </section>
-
 
       {/* WHY CHILDCARE MATTERS */}
       <section
