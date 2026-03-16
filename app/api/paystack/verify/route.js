@@ -17,9 +17,6 @@ export async function POST(req) {
       return Response.json({ success: false }, { status: 400 });
     }
 
-    // ✅ Payment confirmed
-    // Save donation to DB here if needed
-
     return Response.json({
       success: true,
       amount: data.data.amount / 100,

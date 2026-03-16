@@ -25,7 +25,7 @@ export default function Donate() {
     const handler = window.PaystackPop.setup({
       key: process.env.NEXT_PUBLIC_PAYSTACK_KEY,
       email,
-      amount: Number(amount) * 100, // kobo
+      amount: Number(amount) * 129, // kobo
       currency: "KES",
       metadata: {
         custom_fields: [
@@ -86,7 +86,7 @@ export default function Donate() {
       return;
     }
 
-    payWithPaystack(); // ✅ now defined
+    payWithPaystack();
   };
 
   return (
