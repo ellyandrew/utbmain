@@ -31,7 +31,7 @@ export async function POST(req) {
         reference: data.reference,
         paystackId: String(data.id),
         email: data.customer.email,
-        amount: data.amount / 100, // KES
+        amount: data.amount,
         currency: data.currency,
         status: "SUCCESS",
         frequency:

@@ -25,17 +25,21 @@ export default function Donate() {
     const handler = window.PaystackPop.setup({
       key: process.env.NEXT_PUBLIC_PAYSTACK_KEY,
       email,
-      amount: Number(amount) * 129, // kobo
+      amount: Number(amount) * 100, 
       currency: "KES",
       metadata: {
+        donation_type: "public",
+        frequency: frequency,
+        source: "uthabiti africa",
         custom_fields: [
           {
-            display_name: "Donation Type",
+            display_name: "Uthabiti Donation",
             variable_name: "frequency",
             value: frequency,
           },
         ],
       },
+      channels: ["card"],
       callback: function (response) {
         verifyPayment(response.reference);
       },
