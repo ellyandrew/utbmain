@@ -39,7 +39,7 @@ export default function Donate() {
           },
         ],
       },
-      channels: ["card"],
+      // channels: ["card"],
       callback: function (response) {
         verifyPayment(response.reference);
       },

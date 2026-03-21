@@ -548,24 +548,28 @@ const stakeholders = [
                 title: "Collaborative Action for Childcare",
                 text:
                   "A pan-African, multi-stakeholder platform convening policymakers, funders, practitioners, and communities to accelerate childcare reform.",
+                link: "https://cac.uthabitiafrica.org",
               },
               {
                 logo: "/logos/NWC-logo.png",
                 title: "Network for Women in Childcare",
                 text:
                   "A growing movement amplifying women’s leadership through advocacy, peer learning, and professional development.",
+                link: "https://networkforwomeninchildcare.org",
               },
               {
                 logo: "/logos/mamaplus-logo.png",
                 title: "Mama Plus",
                 text:
                   "An innovative model strengthening women-owned childcare micro-enterprises through training, certification, and collective centres.",
+                link: "https://mamaplus.co.ke",
               },
               {
                 logo: "/logos/sacco-logo.png",
                 title: "Collaborative SACCO",
                 text:
                   "A financial inclusion platform offering savings, credit, and financial literacy services tailored to childcare workers.",
+                link: "/",
               },
             ].map((item, i) => (
               <div
@@ -594,7 +598,7 @@ const stakeholders = [
 
                 <p>{item.text}</p>
 
-                <Link href="/" className="learn-link">
+                <Link href={item.link} target="_blank" rel="noopener noreferrer" className="learn-link">
                   Learn More →
                 </Link>
               </div>

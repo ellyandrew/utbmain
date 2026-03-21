@@ -16,6 +16,7 @@ export default function MainHeader() {
     { name: "Home", href: "/" },
     { name: "UA Foundation", href: "/ua-foundation" },
     { name: "Consultancy", href: "/consultancy" },
+    {name : "Events", href: "/events"},
     { name: "News", href: "/news" },
     { name: "Contact Us", href: "/contact" },
     { name: "Insights", href: "/insights" },
